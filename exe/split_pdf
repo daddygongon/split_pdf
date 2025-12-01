@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
-
 require "split_pdf"
+
+SplitPdf::CLI.start(ARGV)

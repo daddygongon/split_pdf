@@ -9,12 +9,30 @@ class TestSplitPdf < Minitest::Test
   def setup
     @test_env_dir = File.join(__dir__, "..", "test_env")
     Dir.mkdir(@test_env_dir) unless Dir.exist?(@test_env_dir)
-    @sample_yaml_path = File.join(@test_env_dir, "sample.yaml")
-    File.write(@sample_yaml_path, "sample: value\n") unless File.exist?(@sample_yaml_path)
+    @hc_array_yaml_path = File.join(@test_env_dir, "hc_array.yaml")
+    @expected_yaml = <<~YAML
+      ---
+      :source_file: ./linux_basic.pdf
+      :target_dir: ./linux_basic
+      :toc:
+      - :no: 
+        :init: 1
+        :fin: 
+        :head: title
+      - :no: s1
+        :init: 2
+        :fin: 
+        :head: command
+      - :no: s1
+        :init: 7
+        :fin: 7
+        :head: line_edit
+    YAML
+    File.write(@hc_array_yaml_path, @expected_yaml) # ←毎回上書き
   end
 
   def teardown
-    File.delete(@sample_yaml_path) if File.exist?(@sample_yaml_path)
+    File.delete(@hc_array_yaml_path) if File.exist?(@hc_array_yaml_path)
     Dir.rmdir(@test_env_dir) if Dir.exist?(@test_env_dir) && Dir.empty?(@test_env_dir)
   end
 
@@ -23,14 +41,15 @@ class TestSplitPdf < Minitest::Test
   end
 
   def test_puts_sample_yaml_outputs_sample_yaml
-    expected_yaml = File.read(@sample_yaml_path)
-    stdout, stderr, status = Open3.capture3("bundle exec exe/split_pdf puts_sample_yaml")
-    assert_equal expected_yaml, stdout
+    exe_path = File.expand_path("../exe/split_pdf", __dir__)
+    stdout, stderr, status = Open3.capture3("bundle exec #{exe_path} puts_sample_yaml", chdir: @test_env_dir)
     assert status.success?, "Process did not exit successfully: #{stderr}"
+    require "yaml"
+    assert_equal YAML.load(@expected_yaml), YAML.load(stdout)
   end
 
   def test_sample_yaml_exists_in_test_env
     assert Dir.exist?(@test_env_dir), "test_env directory does not exist"
-    assert File.exist?(@sample_yaml_path), "sample.yaml does not exist in test_env directory"
+    assert File.exist?(@hc_array_yaml_path), "hc_array.yaml does not exist in test_env directory"
   end
 end
