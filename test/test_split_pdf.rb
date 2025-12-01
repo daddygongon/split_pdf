@@ -7,7 +7,7 @@ Minitest::Reporters.use! Minitest::Reporters::SpecReporter.new
 
 class TestSplitPdf < Minitest::Test
   def setup
-    @test_env_dir = File.join(__dir__, "..", "test_env")
+    @test_env_dir = File.join(__dir__, "test_env")
     Dir.mkdir(@test_env_dir) unless Dir.exist?(@test_env_dir)
     @hc_array_yaml_path = File.join(@test_env_dir, "hc_array.yaml")
     @expected_yaml = <<~YAML
@@ -40,12 +40,16 @@ class TestSplitPdf < Minitest::Test
     refute_nil ::SplitPdf::VERSION
   end
 
-  def test_puts_sample_yaml_outputs_sample_yaml
-    exe_path = File.expand_path("../exe/split_pdf", __dir__)
-    stdout, stderr, status = Open3.capture3("bundle exec #{exe_path} puts_sample_yaml", chdir: @test_env_dir)
-    assert status.success?, "Process did not exit successfully: #{stderr}"
+  def test_puts_sample_yaml
+    p exe_path = File.expand_path("../exe/split_pdf", __dir__)
     require "yaml"
-    assert_equal YAML.load(@expected_yaml), YAML.load(stdout)
+    Dir.chdir(@test_env_dir) do
+      __stdout__, stderr, status = Open3.capture3("bundle exec #{exe_path} puts_sample_yaml")
+      assert status.success?, "Process did not exit successfully: #{stderr}"
+      p hc_sample_yaml_path = File.join(@test_env_dir, "hc_sample.yaml")
+      assert File.exist?(hc_sample_yaml_path), "hc_sample.yaml does not exist"
+      assert_equal YAML.load_file(@hc_array_yaml_path), YAML.load_file(hc_sample_yaml_path)
+    end
   end
 
   def test_sample_yaml_exists_in_test_env

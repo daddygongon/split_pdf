@@ -20,7 +20,7 @@ module SplitPdf
         ]
       }
       yaml_data = YAML.dump(hc_array)
-      sample_yaml_path = File.expand_path("../test_env/sample.yaml", __dir__)
+      sample_yaml_path = "hc_sample.yaml" #File.expand_path(, __dir__)
       File.write(sample_yaml_path, yaml_data)
       puts yaml_data
     end
