@@ -32,8 +32,8 @@ class TestSplitPdf < Minitest::Test
   end
 
   def teardown
-    File.delete(@hc_array_yaml_path) if File.exist?(@hc_array_yaml_path)
-    Dir.rmdir(@test_env_dir) if Dir.exist?(@test_env_dir) && Dir.empty?(@test_env_dir)
+    #File.delete(@hc_array_yaml_path) if File.exist?(@hc_array_yaml_path)
+    #Dir.rmdir(@test_env_dir) if Dir.exist?(@test_env_dir) && Dir.empty?(@test_env_dir)
   end
 
   def test_that_it_has_a_version_number
@@ -41,14 +41,22 @@ class TestSplitPdf < Minitest::Test
   end
 
   def test_puts_sample_yaml
+    require 'colorize'
     p exe_path = File.expand_path("../exe/split_pdf", __dir__)
     require "yaml"
     Dir.chdir(@test_env_dir) do
-      __stdout__, stderr, status = Open3.capture3("bundle exec #{exe_path} puts_sample_yaml")
-      assert status.success?, "Process did not exit successfully: #{stderr}"
-      p hc_sample_yaml_path = File.join(@test_env_dir, "hc_sample.yaml")
-      assert File.exist?(hc_sample_yaml_path), "hc_sample.yaml does not exist"
-      assert_equal YAML.load_file(@hc_array_yaml_path), YAML.load_file(hc_sample_yaml_path)
+      p comm = "bundle exec #{exe_path} puts_sample_yaml"
+      stdout, stderr, status = Open3.capture3(comm)
+#      puts stdout.green
+#      puts stderr.red
+      assert status.success?,
+             "Process did not exit successfully: #{stderr}"
+      p hc_sample_yaml_path = File.join(@test_env_dir,
+                                        "hc_sample.yaml")
+      assert File.exist?(hc_sample_yaml_path),
+             "hc_sample.yaml does not exist"
+      assert_equal YAML.load_file(@hc_array_yaml_path),
+                   YAML.load_file(hc_sample_yaml_path)
     end
   end
 

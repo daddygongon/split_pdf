@@ -33,10 +33,12 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "thor"
+  spec.add_dependency "colorize"
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
+
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "minitest-reporters"
 end

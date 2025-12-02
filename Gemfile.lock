@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     split_pdf (0.1.0)
+      colorize
       thor
 
 GEM
@@ -9,6 +10,7 @@ GEM
   specs:
     ansi (1.5.0)
     builder (3.3.0)
+    colorize (1.1.0)
     date (3.5.0)
     erb (6.0.0)
     io-console (0.8.1)
@@ -29,14 +31,14 @@ GEM
       date
       stringio
     rake (13.3.1)
-    rdoc (6.16.0)
+    rdoc (6.16.1)
       erb
       psych (>= 4.0.0)
       tsort
     reline (0.6.3)
       io-console (~> 0.5)
     ruby-progressbar (1.13.0)
-    stringio (3.1.8)
+    stringio (3.1.9)
     thor (1.4.0)
     tsort (0.2.0)
 
