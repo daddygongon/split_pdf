@@ -7,7 +7,7 @@ module SplitPdf
   class Error < StandardError; end
 
   class CLI < Thor
-    desc "puts_sample_yaml", "Prints and saves a sample hc_array.yaml as sample.yaml in test_env"
+    desc "puts_sample_yaml", "Prints and saves a hc_sample.yaml"
     def puts_sample_yaml
       require "yaml"
       hc_array = {
@@ -35,7 +35,7 @@ module SplitPdf
       split_pdf(yaml_path, with_pages: true)
     end
 
-    desc "split_wo_pages", "Splits the PDF as specified in hc_sample.yaml, without pages in filename"
+    desc "split_wo_pages", "Splits pdf, without pages in filename"
     def split_wo_pages(yaml_path = "hc_sample.yaml")
       split_pdf(yaml_path, with_pages: false)
     end
@@ -46,6 +46,7 @@ module SplitPdf
       require "yaml"
       require "fileutils"
 
+      # read hc_sample.yaml for mk config
       config = YAML.load_file(yaml_path)
       source_file = config[:source_file] || config["source_file"]
       target_dir = config[:target_dir] || config["target_dir"]
@@ -53,6 +54,7 @@ module SplitPdf
 
       FileUtils.mkdir_p(target_dir)
 
+      # split pdf with toc
       toc.each do |v|
         init = v[:init] || v["init"]
         fin = v[:fin] || v["fin"]
